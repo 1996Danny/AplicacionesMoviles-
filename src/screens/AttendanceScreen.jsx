@@ -8,7 +8,6 @@ export default function AttendanceScreen({ route, navigation }) {
   const { career, subject } = route.params;
   const STORAGE_KEY = `attendance_${career.id}_${subject.id}`;
   const [students, setStudents] = useState([]);
-
   useEffect(() => {
     const load = async () => {
       const saved = await AsyncStorage.getItem(STORAGE_KEY);
@@ -39,7 +38,7 @@ export default function AttendanceScreen({ route, navigation }) {
           ...s,
           attendanceDates: hasAttendedToday
             ? s.attendanceDates.filter(d => d !== today)
-            : [...s.attendanceDates, today] 
+            : [...s.attendanceDates, today]
         };
       }
       return s;
@@ -53,25 +52,28 @@ export default function AttendanceScreen({ route, navigation }) {
       <Text style={styles.subtitle}>Carrera: {career.name}</Text>
 
       {students.map(s => {
-        const percentage = s.attendanceDates.length
-          ? ((s.attendanceDates.length / 1) * 100).toFixed(1)
-          : 0;
+        const attended = s.attendanceDates?.length || 0;
+        const totalClasses = 1;
+        const percentage = totalClasses ? ((attended / totalClasses) * 100).toFixed(1) : 0;
+
         return (
-          <View key={s.id} style={[styles.card, { borderLeftColor: s.attendanceDates.length ? "#22c55e" : "#eab308" }]}>
+          <View
+            key={s.id} // ← clave única obligatoria
+            style={[styles.card, { borderLeftColor: attended ? "#22c55e" : "#eab308" }]}
+          >
             <Text style={styles.name}>{s.name} - {percentage}%</Text>
             <Text style={styles.dates}>
-              {s.attendanceDates.length
-                ? s.attendanceDates.join(", ")
-                : "Sin asistencia"}
+              {attended ? s.attendanceDates.join(", ") : "Sin asistencia"}
             </Text>
             <CustomButton
               title={s.attendanceDates.includes(new Date().toISOString().slice(0, 10)) ? "Asistencia Hoy" : "Falta Hoy"}
               onPress={() => toggleAttendance(s.id)}
-              style={{ backgroundColor: s.attendanceDates.length ? "#22c55e" : "#eab308" }}
+              style={{ backgroundColor: attended ? "#22c55e" : "#eab308" }}
             />
           </View>
         );
       })}
+
 
       <CustomButton
         title="← Volver a Materias"
