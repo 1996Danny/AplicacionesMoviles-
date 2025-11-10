@@ -1,65 +1,61 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, StyleSheet } from "react-native";
+import { View, Text, TextInput, StyleSheet, Alert } from "react-native";
 import CustomButton from "../components/CustomButton";
 
-export default function LoginScreen({ onLoginSuccess }) {
+export default function LoginScreen({ navigation }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [feedback, setFeedback] = useState("");
 
   const handleLogin = () => {
-    setFeedback("");
     if (username === "admin" && password === "123") {
-      setFeedback("✅ Inicio de sesión exitoso");
-      setTimeout(onLoginSuccess, 1000);
+      navigation.replace("Careers"); // Navega y no vuelve atrás
     } else {
-      setFeedback("❌ Credenciales incorrectas (usa admin / 123)");
+      Alert.alert("Error", "Credenciales incorrectas. Usa admin / 123.");
     }
   };
 
   return (
     <View style={styles.container}>
-      <View style={styles.box}>
-        <Text style={styles.title}>Iniciar Sesión</Text>
+      <Text style={styles.title}>Iniciar Sesión</Text>
 
-        {feedback ? <Text style={styles.feedback}>{feedback}</Text> : null}
+      <TextInput
+        placeholder="Usuario (admin)"
+        value={username}
+        onChangeText={setUsername}
+        style={styles.input}
+      />
 
-        <TextInput
-          placeholder="Usuario"
-          value={username}
-          onChangeText={setUsername}
-          style={styles.input}
-        />
+      <TextInput
+        secureTextEntry
+        placeholder="Contraseña (123)"
+        value={password}
+        onChangeText={setPassword}
+        style={styles.input}
+      />
 
-        <TextInput
-          placeholder="Contraseña"
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry
-          style={styles.input}
-        />
-
-        <CustomButton
-          title="Acceder"
-          onPress={handleLogin}
-          style={{ backgroundColor: "#2563eb" }}
-        />
-      </View>
+      <CustomButton title="Acceder" onPress={handleLogin} style={{ backgroundColor: "#2563eb" }} />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: "center", padding: 20, backgroundColor: "#eee" },
-  box: { backgroundColor: "#fff", padding: 24, borderRadius: 12, elevation: 6 },
-  title: { fontSize: 28, fontWeight: "800", textAlign: "center", marginBottom: 20 },
+  container: {
+    padding: 24,
+    flex: 1,
+    justifyContent: "center",
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: "800",
+    textAlign: "center",
+    marginBottom: 40,
+  },
   input: {
     borderWidth: 1,
     borderColor: "#ccc",
-    padding: 12,
     borderRadius: 8,
-    marginBottom: 12,
+    padding: 12,
+    marginBottom: 16,
     fontSize: 16,
   },
-  feedback: { textAlign: "center", marginBottom: 14, fontWeight: "600" },
 });

@@ -1,15 +1,26 @@
 export const DUMMY_CAREERS = [
-  { id: '1', name: 'Ingeniería de Software' },
-  { id: '2', name: 'Arquitectura' },
-  { id: '3', name: 'Medicina' },
-  { id: '4', name: 'Diseño Gráfico' },
+  {
+    id: 1,
+    name: "Ingeniería en Sistemas",
+    subjects: [
+      { id: 101, name: "Algoritmos" },
+      { id: 102, name: "Arquitectura de Computadoras" },
+      { id: 103, name: "Base de Datos" }
+    ]
+  },
+  {
+    id: 2,
+    name: "Profesorado en Matemática",
+    subjects: [
+      { id: 201, name: "Análisis Matemático" },
+      { id: 202, name: "Álgebra Lineal" },
+      { id: 203, name: "Fundamentos de la Educación" }
+    ]
+  }
 ];
 
 export const DUMMY_STUDENTS = [
-  { id: 's1', name: 'Ana Rodríguez', careerId: '1', attendance: true },
-  { id: 's2', name: 'Beto Pérez', careerId: '1', attendance: false },
-  { id: 's3', name: 'Carla Gómez', careerId: '2', attendance: true },
-  { id: 's4', name: 'Daniel López', careerId: '3', attendance: false },
-  { id: 's5', name: 'Elena García', careerId: '1', attendance: true },
-  { id: 's6', name: 'Felipe Torres', careerId: '1', attendance: false },
+  { id: 1, name: "Juan Pérez", careerId: 1 },
+  { id: 2, name: "Ana Torres", careerId: 1 },
+  { id: 3, name: "Carlos Gómez", careerId: 2 },
 ];

@@ -1,57 +1,23 @@
-import React, { useState } from "react";
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import LoginScreen from "./src/screens/LoginScreen";
 import CareerSelectionScreen from "./src/screens/CareerSelectionScreen";
+import SubjectSelectionScreen from "./src/screens/SubjectSelectionScreen";
 import AttendanceScreen from "./src/screens/AttendanceScreen";
+import ReportScreen from "./src/screens/ReportScreen";
+
+const Stack = createNativeStackNavigator();
 
 export default function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [current, setCurrent] = useState("Login");
-  const [selectedCareer, setSelectedCareer] = useState(null);
-
-  if (!isLoggedIn) {
-    return (
-      <LoginScreen
-        onLoginSuccess={() => {
-          setIsLoggedIn(true);
-          setCurrent("Careers");
-        }}
-      />
-    );
-  }
-
-  if (current === "Careers") {
-    return (
-      <CareerSelectionScreen
-        onSelectCareer={(career) => {
-          setSelectedCareer(career);
-          setCurrent("Attendance");
-        }}
-        onLogout={() => {
-          setIsLoggedIn(false);
-          setSelectedCareer(null);
-          setCurrent("Login");
-        }}
-      />
-    );
-  }
-
-  if (current === "Attendance") {
-    // Evitar el crash si algo quedó en null
-    if (!selectedCareer) {
-      setCurrent("Careers");
-      return null;
-    }
-
-    return (
-      <AttendanceScreen
-        selectedCareer={selectedCareer}
-        onGoBack={() => {
-          setSelectedCareer(null);
-          setCurrent("Careers");
-        }}
-      />
-    );
-  }
-
-  return null;
+  return (
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen name="Login" component={LoginScreen} options={{ title: "Iniciar Sesión" }} />
+        <Stack.Screen name="Careers" component={CareerSelectionScreen} options={{ title: "Carreras" }} />
+        <Stack.Screen name="Subjects" component={SubjectSelectionScreen} options={{ title: "Materias" }} />
+        <Stack.Screen name="Attendance" component={AttendanceScreen} options={{ title: "Asistencia" }} />
+        <Stack.Screen name="Report" component={ReportScreen} options={{ title: "Informe" }} />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
 }

@@ -1,29 +1,28 @@
 import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from "react-native";
-import CustomButton from "../components/CustomButton";
+import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { DUMMY_CAREERS } from "../core/data";
+import CustomButton from "../components/CustomButton";
 
-export default function CareerSelectionScreen({ onSelectCareer, onLogout }) {
+export default function CareerSelectionScreen({ navigation }) {
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>Selecciona una Carrera</Text>
+    <View style={styles.container}>
+      <Text style={styles.title}>Seleccione una Carrera</Text>
 
       {DUMMY_CAREERS.map(career => (
         <TouchableOpacity
           key={career.id}
           style={styles.card}
-          onPress={() => onSelectCareer(career)}
+          onPress={() => navigation.navigate("Subjects", { career })}
         >
-          <Text style={styles.careerText}>{career.name}</Text>
+          <Text style={styles.text}>{career.name}</Text>
         </TouchableOpacity>
       ))}
-
-      <CustomButton
-        title="Cerrar Sesión"
-        onPress={onLogout}
-        style={{ backgroundColor: "#dc2626", marginTop: 10 }}
-      />
-    </ScrollView>
+        <CustomButton
+          title="Cerrar Sesión"
+          onPress={() => navigation.replace("Login")}
+          style={{ backgroundColor: "#dc2626", marginTop: 20 }}
+        />
+    </View>
   );
 }
 
@@ -35,8 +34,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     padding: 18,
     borderRadius: 10,
-    elevation: 4,
     marginBottom: 12,
+    elevation: 4
   },
-  careerText: { fontSize: 18, fontWeight: "600" },
+  text: { fontSize: 18, fontWeight: "600" }
 });
