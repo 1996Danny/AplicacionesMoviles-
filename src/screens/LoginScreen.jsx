@@ -8,7 +8,7 @@ export default function LoginScreen({ navigation }) {
 
   const handleLogin = () => {
     if (username === "admin" && password === "123") {
-      navigation.replace("Careers"); // Navega y no vuelve atrás
+      navigation.replace("Careers"); 
     } else {
       Alert.alert("Error", "Credenciales incorrectas. Usa admin / 123.");
     }
@@ -19,7 +19,7 @@ export default function LoginScreen({ navigation }) {
       <Text style={styles.title}>Iniciar Sesión</Text>
 
       <TextInput
-        placeholder="Usuario (admin)"
+        placeholder="Usuario"
         value={username}
         onChangeText={setUsername}
         style={styles.input}
@@ -27,7 +27,7 @@ export default function LoginScreen({ navigation }) {
 
       <TextInput
         secureTextEntry
-        placeholder="Contraseña (123)"
+        placeholder="Contraseña"
         value={password}
         onChangeText={setPassword}
         style={styles.input}

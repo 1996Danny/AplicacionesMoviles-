@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, ScrollView } from "react-native";
+import { View, Text, ScrollView, StyleSheet } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import CustomButton from "../components/CustomButton";
 import { DUMMY_STUDENTS } from "../core/data";
 
 export default function AttendanceScreen({ route, navigation }) {
   const { career, subject } = route.params;
-
   const STORAGE_KEY = `attendance_${career.id}_${subject.id}`;
   const [students, setStudents] = useState([]);
 
@@ -19,7 +18,7 @@ export default function AttendanceScreen({ route, navigation }) {
         setStudents(
           DUMMY_STUDENTS
             .filter(s => s.careerId === career.id)
-            .map(s => ({ ...s, attendance: false }))
+            .map(s => ({ ...s, attendanceDates: [] }))
         );
       }
     };
@@ -32,28 +31,47 @@ export default function AttendanceScreen({ route, navigation }) {
   };
 
   const toggleAttendance = (id) => {
-    save(students.map(s => s.id === id ? { ...s, attendance: !s.attendance } : s));
+    const today = new Date().toISOString().slice(0, 10);
+    const updated = students.map(s => {
+      if (s.id === id) {
+        const hasAttendedToday = s.attendanceDates.includes(today);
+        return {
+          ...s,
+          attendanceDates: hasAttendedToday
+            ? s.attendanceDates.filter(d => d !== today)
+            : [...s.attendanceDates, today] 
+        };
+      }
+      return s;
+    });
+    save(updated);
   };
-
-  const attended = students.filter(s => s.attendance).length;
-  const percentage = students.length ? ((attended / students.length) * 100).toFixed(1) : 0;
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>{subject.name}</Text>
       <Text style={styles.subtitle}>Carrera: {career.name}</Text>
-      <Text style={styles.percent}>Asistencia: {percentage}%</Text>
 
-      {students.map(s => (
-        <View key={s.id} style={[styles.card, { borderLeftColor: s.attendance ? "#22c55e" : "#eab308" }]}>
-          <Text style={styles.name}>{s.name}</Text>
-          <CustomButton
-            title={s.attendance ? "Asistencia" : "Falta"}
-            onPress={() => toggleAttendance(s.id)}
-            style={{ backgroundColor: s.attendance ? "#22c55e" : "#eab308" }}
-          />
-        </View>
-      ))}
+      {students.map(s => {
+        const percentage = s.attendanceDates.length
+          ? ((s.attendanceDates.length / 1) * 100).toFixed(1)
+          : 0;
+        return (
+          <View key={s.id} style={[styles.card, { borderLeftColor: s.attendanceDates.length ? "#22c55e" : "#eab308" }]}>
+            <Text style={styles.name}>{s.name} - {percentage}%</Text>
+            <Text style={styles.dates}>
+              {s.attendanceDates.length
+                ? s.attendanceDates.join(", ")
+                : "Sin asistencia"}
+            </Text>
+            <CustomButton
+              title={s.attendanceDates.includes(new Date().toISOString().slice(0, 10)) ? "Asistencia Hoy" : "Falta Hoy"}
+              onPress={() => toggleAttendance(s.id)}
+              style={{ backgroundColor: s.attendanceDates.length ? "#22c55e" : "#eab308" }}
+            />
+          </View>
+        );
+      })}
 
       <CustomButton
         title="← Volver a Materias"
@@ -68,7 +86,6 @@ const styles = StyleSheet.create({
   container: { padding: 20, alignItems: "center" },
   title: { fontSize: 28, fontWeight: "800" },
   subtitle: { fontSize: 16, marginBottom: 10 },
-  percent: { fontSize: 20, fontWeight: "600", marginBottom: 16 },
   card: {
     width: "100%",
     padding: 16,
@@ -78,5 +95,6 @@ const styles = StyleSheet.create({
     borderLeftWidth: 6,
     marginBottom: 12
   },
-  name: { fontSize: 18, fontWeight: "600", marginBottom: 8 }
+  name: { fontSize: 18, fontWeight: "600", marginBottom: 6 },
+  dates: { fontSize: 14, color: "#555", marginBottom: 8 }
 });
